@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stark OS - Cadastro</title>
+    <!-- Utiliza o mesmo arquivo de estilo base e as regras de cadastro fornecidas -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="highlight"></span>
+            </div>
+            <nav class="nav-links">
+                <a href="home.html" class="active">HOME</a>
+                <a href="index.html" class="active">GALERIA</a>
+                <a href="cadastro.html" class="active">CADASTRO</a>
+                <a href="login.html" class="active">LOGIN</a>
+                <a href="chat.html" class="active">CHAT</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTAINER DE ALINHAMENTO CENTRAL -->
+    <main class="cadastro-container">
+        <!-- PAINEL DE CADASTRO ESTILO HUD -->
+        <div class="cadastro-box">
+            <h2>Novo Registro</h2>
+            
+            <form id="formCadastro">
+                <div class="form-group">
+                    <label for="usuario">Nome do usuário</label>
+                    <input type="text" id="usuario" name="usuario" required placeholder="digite seu nome de usuario">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="digite seu e-mail">
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required placeholder="crie uma senha com 6 digitos">
+                </div>
+
+                <button type="submit" id="btnEnviar">Enviar</button>
+            </form>
+
+            <!-- ÁREA DE RESPOSTA DO SISTEMA -->
+            <div id="resposta"></div>
+        </div>
+    </main>
+
+    <!-- LÓGICA DE ENVIO PARA O BACKEND -->
+    <script>
+        const form = document.getElementById('formCadastro');
+        const btnEnviar = document.getElementById('btnEnviar');
+        const respostaDiv = document.getElementById('resposta');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impede o recarregamento da página
+
+            // Desabilita o botão durante o processamento
+            btnEnviar.disabled = true;
+            respostaDiv.style.color = '#FFD700'; // Cor dourada Stark para processamento
+            respostaDiv.innerText = 'Processando credenciais e acessando satélite...';
+
+            // ATENÇÃO: Pegando o valor do campo usuario e guardando na variável 'nome'
+            const nome = document.getElementById('usuario').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                // Alterado para rota relativa '/cadastro' para evitar erros de CORS
+                const resposta = await fetch('/cadastro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, email, senha }) // Enviando 'nome' igual o servidor espera
+                });
+
+                const dados = await resposta.json();
+
+                if (resposta.ok) {
+                    respostaDiv.style.color = '#00E5FF'; // Azul Arc para sucesso
+                    
+                    // ALTERAÇÃO: Mensagem explícita de direcionamento na tela
+                    respostaDiv.innerText = `Acesso Concedido! Iniciando conexão segura e direcionando para o Chat...`;
+                    form.reset(); // Limpa os campos do formulário
+                    
+                    // ALTERAÇÃO: Aguarda exatamente 2 segundos antes de mudar de página
+                    setTimeout(() => {
+                        window.location.href = '/chat.html';
+                    }, 2000);
+                } else {
+                    respostaDiv.style.color = '#ff1a1a'; // Vermelho para erro
+                    respostaDiv.innerText = `Erro: ${dados.mensagem || dados.erro}`;
+                    btnEnviar.disabled = false;
+                }
+            } catch (erro) {
+                respostaDiv.style.color = '#ff1a1a';
+                respostaDiv.innerText = 'Falha crítica: Servidor Stark Offline.';
+                console.error(erro);
+                btnEnviar.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>

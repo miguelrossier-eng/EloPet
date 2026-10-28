@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stark Labs - Criador & IAs</title>
+    <!-- Importação do arquivo de estilização fornecido -->
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="highlight"></span>
+            </div>
+            <!-- Centralização exata do menu de navegação -->
+            <nav class="nav-links">
+                <a href="index.html" class="active">GALERIA</a>
+                <a href="cadastro.html" class="active">CADASTRO</a>
+                <a href="login.html" class="active">LOGIN</a>
+                <a href="chat.html" class="active">CHAT</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (EFEITO INTERFACE STARK HUD) -->
+    <section class="hero-section">
+        <h1>Banco de Dados Stark</h1>
+    </section>
+
+    <!-- CONTAINER DO GRID REUTILIZÁVEL (FORMATO 2X2 CONFIGURADO NO SEU CSS) -->
+    <main class="cards-grid" id="gridPerfis">
+        
+        <!-- CARD 1: TONY STARK -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="tony stark.jpeg" alt="Tony Stark" class="card-image">
+                <span class="badge badge-marvel">Criador</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Tony Stark</h2>
+                <p class="character-bio">
+                    Gênio, bilionário, playboy e filantropo. O inventor da tecnologia de Reator Arc e das armaduras do Homem de Ferro. É a mente brilhante por trás da engenharia de IA mais avançada do planeta.
+                </p>
+                <div class="card-actions">
+                    <a href="#" class="btn-profile">Ver Perfil</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 2: J.A.R.V.I.S. -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="jarvis.webp" alt="J.A.R.V.I.S." class="card-image">
+                <span class="badge badge-dc">IA Original</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">J.A.R.V.I.S.</h2>
+                <p class="character-bio">
+                    Just A Rather Very Intelligent System. A inteligência artificial pioneira de Stark, responsável pelo suporte tático em combate, controle residencial e desenvolvimento de novos projetos de engenharia.
+                </p>
+                <div class="card-actions">
+                    <a href="#" class="btn-profile">Ver Perfil</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 3: SEXTA-FEIRA -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="friday.jpg" alt="Sexta-Feira" class="card-image">
+                <span class="badge badge-anime">IA Sucessora</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Sexta-Feira</h2>
+                <p class="character-bio">
+                    O sistema de IA substituto integrado às armaduras de Tony após a criação do Visão. Altamente eficiente em análise tática, gerenciamento de danos e protocolos de contingência globais.
+                </p>
+                <div class="card-actions">
+                    <a href="#" class="btn-profile">Ver Perfil</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- CARD 4: VISÃO -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="visao.jpg" alt="Visão" class="card-image">
+                <span class="badge badge-anime">Vingador</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Visão</h2>
+                <p class="character-bio">
+                    A evolução biomecânica definitiva nascida da fusão entre a inteligência do J.A.R.V.I.S., o poder da Joia da Mente e um corpo sintético de Vibranium. Altamente eficiente em computação quântica, manipulação de densidade corpórea e salvaguarda da humanidade contra ameaças de nível cósmico.
+                </p>
+                <div class="card-actions">
+                    <a href="#" class="btn-profile">Ver Perfil</a>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- LOG COMPLEMENTAR (OPCIONAL: Script para renderização dinâmica via API do backend) -->
+    <script>
+        // Caso queira que os novos agentes cadastrados apareçam aqui automaticamente em tempo real:
+        async function carregarPerfisDoServidor() {
+            try {
+                const resposta = await fetch('http://localhost:3000/perfis');
+                if (resposta.ok) {
+                    const perfis = await resposta.json();
+                    const grid = document.getElementById('gridPerfis');
+                    
+                    // Limpa o grid estático e reconstrói com os dados atualizados do backend
+                    grid.innerHTML = '';
+                    
+                    perfis.forEach(perfil => {
+                        // Define a cor da badge dinamicamente baseada na TAG
+                        let badgeClass = 'badge-anime';
+                        if(perfil.tag === 'Criador') badgeClass = 'badge-marvel';
+                        if(perfil.tag === 'IA Original') badgeClass = 'badge-dc';
+
+                        grid.innerHTML += `
+                            <article class="character-card">
+                                <div class="card-image-wrapper">
+                                    <img src="${perfil.imagem}" alt="${perfil.nome}" class="card-image" onerror="this.src='https://unsplash.com'">
+                                        <span class="badge ${badgeClass}">${perfil.tag}</span>
+                                    </div>
+                                    <div class="card-info">
+                                        <h2 class="character-name">${perfil.nome}</h2>
+                                        <p class="character-bio">${perfil.descricao}</p>
+                                        <div class="card-actions">
+                                            <a href="#" class="btn-profile">Ver Perfil</a>
+                                        </div>
+                                    </div>
+                            </article>
+                        `;
+                    });
+                }
+            } catch (erro) {
+                console.log("[STARK OS]: Rodando com dados locais pré-renderizados do HUD.");
+            }
+        }
+
+        // Executa a busca dinâmica ao inicializar o sistema Stark
+        window.addEventListener('DOMContentLoaded', carregarPerfisDoServidor);
+    </script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+/* ==========================================================================
+   CONFIGURAÇÕES GERAIS E VARIÁVEIS DO SISTEMA STARK
+   ========================================================================== */
+:root {
+    --stark-red: #8B0000;
+    --stark-bright-red: #ff1a1a;
+    --stark-gold: #FFD700;
+    --arc-blue: #00E5FF;
+    --dark-bg: #0F1115;
+    --panel-bg: #1A1D24;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: #FFFFFF;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   HEADER / MENU DE NAVEGAÇÃO COMPARTILHADO
+   ========================================================================== */
+.main-header {
+    background-color: rgba(15, 17, 21, 0.95);
+    border-bottom: 2px solid var(--stark-bright-red);
+    box-shadow: 0 0 20px rgba(255, 26, 26, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+}
+
+.logo .highlight {
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: var(--stark-bright-red);
+    text-shadow: 0 0 12px rgba(255, 26, 26, 0.6);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #8c7a7a;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: var(--stark-bright-red);
+    text-shadow: 0 0 8px rgba(255, 26, 26, 0.6);
+}
+
+/* ==========================================================================
+   PÁGINA 1: INDEX - HERO SECTION E GRID DE CARDS
+   ========================================================================== */
+.hero-section {
+    text-align: center;
+    padding: 50px 20px;
+    background: radial-gradient(circle, rgba(255, 26, 26, 0.15) 0%, rgba(11, 2, 2, 0) 65%);
+}
+
+.hero-section h1 {
+    font-size: 2.3rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(255, 26, 26, 0.6);
+}
+
+.cards-grid {
+    max-width: 1000px;
+    margin: 0 auto 60px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.character-card {
+    background: rgba(25, 6, 6, 0.6);
+    border: 1px solid rgba(255, 26, 26, 0.15);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.character-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--stark-bright-red);
+    box-shadow: 0 0 30px rgba(255, 26, 26, 0.35);
+}
+
+.card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    background-color: #190606;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+}
+
+.character-card:hover .card-image {
+    opacity: 1;
+    transform: scale(1.03);
+}
+
+/* Badges Holográficas */
+.badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 14px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-radius: 6px;
+    letter-spacing: 1px;
+}
+
+.badge-marvel {
+    background-color: rgba(255, 26, 26, 0.2);
+    color: var(--stark-bright-red);
+    border: 1px solid var(--stark-bright-red);
+    text-shadow: 0 0 5px rgba(255, 26, 26, 0.5);
+}
+
+.badge-dc {
+    background-color: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+    border: 1px solid #f97316;
+    text-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
+}
+
+.badge-anime {
+    background-color: rgba(236, 72, 153, 0.15);
+    color: #ec4899;
+    border: 1px solid #ec4899;
+    text-shadow: 0 0 5px rgba(236, 72, 153, 0.5);
+}
+
+.card-info {
+    padding: 25px;
+}
+
+.character-name {
+    color: #ffffff;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.character-bio {
+    color: #bfaeae;
+    font-size: 14px;
+    line-height: 1.6;
+    height: 110px;
+    overflow: hidden;
+}
+
+.card-actions {
+    margin-top: 20px;
+}
+
+.btn-profile {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    background: transparent;
+    color: var(--stark-bright-red);
+    border: 1px solid rgba(255, 26, 26, 0.4);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-profile:hover {
+    background: rgba(255, 26, 26, 0.1);
+    border-color: var(--stark-bright-red);
+    box-shadow: 0 0 15px rgba(255, 26, 26, 0.4);
+    text-shadow: 0 0 5px var(--stark-bright-red);
+}
+
+/* ==========================================================================
+   PÁGINA 2: CADASTRO - FORMULÁRIO HUD
+   ========================================================================== */
+.cadastro-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+.cadastro-box {
+    background: var(--panel-bg);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px 30px;
+    border: 2px solid var(--stark-red);
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(139, 0, 0, 0.45), inset 0 0 15px rgba(0, 229, 255, 0.05);
+    position: relative;
+}
+
+.cadastro-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: 20px;
+    width: 40px;
+    height: 4px;
+    background: var(--stark-gold);
+    box-shadow: 0 0 10px var(--stark-gold);
+}
+
+.cadastro-box h2 {
+    color: var(--stark-gold);
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    color: var(--arc-blue);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    background: #090B0E;
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 12px 15px;
+    color: #FFFFFF;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--arc-blue);
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    background: #11141B;
+}
+
+#btnEnviar {
+    width: 100%;
+    background: var(--stark-red);
+    color: var(--stark-gold);
+    border: 1px solid var(--stark-gold);
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+#btnEnviar:hover:not(:disabled) {
+    background: var(--stark-gold);
+    color: #000000;
+    box-shadow: 0 0 15px var(--stark-gold);
+    transform: translateY(-1px);
+}
+
+#btnEnviar:disabled {
+    background: #331A1A;
+    color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+    cursor: not-allowed;
+    animation: alertPulse 1.5s infinite alternate;
+}
+
+#resposta {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    min-height: 20px;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   PÁGINA 3: CHAT SEGURO - REATOR ARC E SATELLITE MESSAGES
+   ========================================================================== */
+.chat-container {
+    width: 100%;
+    max-width: 450px;
+    height: 80vh;
+    background: var(--panel-bg);
+    border: 2px solid var(--stark-red);
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.5), inset 0 0 10px rgba(0, 229, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, var(--stark-red), #4A0000);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 2px solid var(--stark-gold);
+}
+
+.arc-reactor {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #FFF 30%, var(--arc-blue) 70%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--arc-blue);
+    animation: pulse 2s infinite alternate;
+}
+
+.header-info h2 {
+    font-size: 1.1rem;
+    color: var(--stark-gold);
+    letter-spacing: 2px;
+}
+
+.header-info p {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.message .sender {
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.message .timestamp {
+    font-size: 0.65rem;
+    align-self: flex-end;
+    margin-top: 4px;
+    opacity: 0.6;
+}
+
+/* Mensagens Recebidas e Enviadas */
+.message.incoming {
+    background: rgba(0, 229, 255, 0.1);
+    border-left: 3px solid var(--arc-blue);
+    align-self: flex-start;
+}
+
+.message.incoming .sender {
+    color: var(--arc-blue);
+}
+
+.message.outgoing {
+    background: rgba(255, 217, 0, 0.1);
+    border-right: 3px solid var(--stark-gold);
+    align-self: flex-end;
+}
+
+.message.outgoing .sender {
+    color: var(--stark-gold);
+}
+
+/* Campo de Input do Chat */
+.chat-input-area {
+    padding: 15px;
+    background: #11141A;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--arc-blue);
+    padding: 12px;
+    color: #FFF;
+    border-radius: 6px;
+}

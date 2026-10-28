@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Entrar</title>
+  
+  <!-- Estilos globais do projeto -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Estilos específicos para a tela e navbar -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0d0f12;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabeçalho e Navegação */
+    header {
+      width: 100%;
+      background-color: #0d0f12;
+      border-bottom: 2px solid #ff0000;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      color: #a0a0a0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    nav a.active {
+      color: #ff0000;
+      border-bottom: 2px solid #ff0000;
+      padding-bottom: 4px;
+    }
+
+    /* Container Principal */
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Card de Login */
+    .card-login {
+      background-color: #15181e;
+      border: 1.5px solid #e50914;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+      border-radius: 12px;
+      padding: 35px 30px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+
+    /* Detalhe Amarelo Superior */
+    .card-login::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: 40px;
+      width: 45px;
+      height: 4px;
+      background-color: #ffcc00;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #ffcc00;
+    }
+
+    /* Título */
+    .card-login h2 {
+      color: #ffcc00;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    /* Formulário */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: #00e5ff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .form-group input {
+      width: 100%;
+      background-color: #090a0c;
+      border: 1px solid #1f242d;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #00e5ff;
+      box-shadow: 0 0 6px rgba(0, 229, 255, 0.3);
+    }
+
+    .form-group input::placeholder {
+      color: #4a5260;
+    }
+
+    /* Caixa de Resposta Dinâmica do Sistema Stark */
+    .caixa-resposta {
+      background-color: rgba(13, 15, 18, 0.6);
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    /* Botão Entrar */
+    .btn-login {
+      width: 100%;
+      background-color: #990000;
+      color: #ffcc00;
+      border: 1px solid #ff3333;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 10px;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      background-color: #cc0000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+
+    .btn-login:disabled {
+      background-color: #4a1111;
+      color: #8a7316;
+      cursor: not-allowed;
+      border-color: #5a1a1a;
+    }
+
+    /* Links Auxiliares */
+    .links-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .links-footer a {
+      color: #00e5ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .links-footer a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
+  <header class="main-header">
+      <div class="header-container">
+          <div class="logo">
+              <span class="highlight"></span>
+          </div>
+          <nav class="nav-links">
+              <a href="index.html">GALERIA</a>
+              <a href="cadastro.html">CADASTRO</a>
+              <a href="login.html" class="active">LOGIN</a>
+              <a href="chat.html">CHAT</a>
+          </nav>
+      </div>
+  </header>
+
+  <!-- Área Central com o Card de Login -->
+  <main>
+    <div class="card-login">
+      <h2>ENTRAR NA CONTA</h2>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="identificador">E-MAIL OU USUÁRIO</label>
+          <input type="text" id="identificador" name="identificador" placeholder="digite seu e-mail ou usuario" required>
+        </div>
+
+        <div class="form-group">
+          <label for="senha">SENHA</label>
+          <input type="password" id="senha" name="senha" placeholder="digite sua senha" required>
+        </div>
+
+        <!-- Área única e dinâmica para respostas e erros de validação -->
+        <div id="statusSistema" class="caixa-resposta" style="display: none;"></div>
+
+        <button type="submit" id="btnEntrar" class="btn-login">ENTRAR</button>
+
+        <div class="links-footer">
+          <p style="color: #a0a0a0;">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Lógica JavaScript Real Integrada ao Servidor -->
+  <script>
+    const form = document.getElementById('loginForm');
+    const btnEntrar = document.getElementById('btnEntrar');
+    const statusDiv = document.getElementById('statusSistema');
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      // Desabilita interações durante o envio para segurança
+      btnEntrar.disabled = true;
+      statusDiv.style.display = 'block';
+      statusDiv.style.borderColor = '#ffcc00';
+      statusDiv.style.color = '#ffcc00'; // Amarelo Stark para progresso
+      statusDiv.innerText = 'Autenticando acesso aos servidores Stark...';
+
+      const identificador = document.getElementById('identificador').value;
+      const senha = document.getElementById('senha').value;
+
+      try {
+        // Dispara requisição HTTP POST para a rota do servidor.js
+        const resposta = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ identificador, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok) {
+          // Sucesso: Credenciais corretas!
+          statusDiv.style.borderColor = '#00e676';
+          statusDiv.style.color = '#00e676'; // Verde para sucesso
+          statusDiv.innerText = 'Conexão Estabelecida! Direcionando para o Chat...';
+          
+          form.reset();
+
+          // Armazena temporariamente o nome de quem logou para o chat poder usar depois
+          localStorage.setItem('usuarioStark', dados.usuario || identificador);
+
+          // Aguarda 2 segundos para o usuário ver o feedback de sucesso antes do redirecionamento
+          setTimeout(() => {
+             window.location.href = "/chat.html";
+          }, 2000);
+
+        } else {
+          // Erro retornado pelo backend (Senha errada ou usuário inexistente)
+          statusDiv.style.borderColor = '#ff1a1a';
+          statusDiv.style.color = '#ff1a1a'; // Vermelho para erro nas credenciais
+          statusDiv.innerText = `Acesso Negado: ${dados.erro}`;
+          btnEntrar.disabled = false;
+        }
+
+      } catch (erro) {
+        // Falha caso o servidor Node esteja desligado
+        statusDiv.style.borderColor = '#ff1a1a';
+        statusDiv.style.color = '#ff1a1a';
+        statusDiv.innerText = 'Falha crítica: Servidor Stark offline.';
+        console.error(erro);
+        btnEntrar.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
