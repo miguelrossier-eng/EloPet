@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stark Labs - Criador & IAs</title>
+    <link rel="stylesheet" href="style.css"> 
+
+    <!-- ESTILO DO MODAL STARK HUD -->
+    <style>
+        .stark-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .stark-modal-box {
+            background: #111317;
+            border: 1px solid #e62429;
+            box-shadow: 0 0 25px rgba(230, 36, 41, 0.45);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .stark-modal-box::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            right: 30px;
+            width: 45px;
+            height: 6px;
+            background: #f0b90b;
+            border-radius: 3px;
+        }
+
+        .stark-modal-title {
+            color: #f0b90b;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .stark-modal-text {
+            color: #cfd6e0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .stark-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-stark-cadastro {
+            background: #9e0b0f;
+            color: #fff;
+            border: 1px solid #f0b90b;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-stark-cadastro:hover {
+            background: #e62429;
+            box-shadow: 0 0 12px rgba(230, 36, 41, 0.6);
+        }
+
+        .btn-stark-fechar {
+            background: transparent;
+            color: #8a94a6;
+            border: 1px solid #333a45;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-stark-fechar:hover {
+            color: #fff;
+            border-color: #8a94a6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="highlight"></span>
+            </div>
+            <nav class="nav-links">
+                <a href="home.html" class="active">HOME</a>
+                <a href="index.html" class="active">GALERIA</a>
+                <a href="cadastro.html" class="active">CADASTRO</a>
+                <a href="login.html" class="active">LOGIN</a>
+                <a href="chat.html" id="link-chat" class="classe-protegida">CHAT</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <h1>Banco de Dados Stark</h1>
+    </section>
+
+    <!-- CONTAINER DO GRID -->
+    <main class="cards-grid" id="gridPerfis">
+        <!-- CARD 1: TONY STARK -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="tony stark.jpeg" alt="Tony Stark" class="card-image">
+                <span class="badge badge-marvel">Criador</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Tony Stark</h2>
+                <p class="character-bio">
+                    Gênio, bilionário, playboy e filantropo. O inventor da tecnologia de Reator Arc e das armaduras do Homem de Ferro. É a mente brilhante por trás da engenharia de IA mais avançada do planeta.
+                </p>
+                <div class="card-actions"></div>
+            </div>
+        </article>
+
+        <!-- CARD 2: J.A.R.V.I.S. -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="jarvis.webp" alt="J.A.R.V.I.S." class="card-image">
+                <span class="badge badge-dc">IA Original</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">J.A.R.V.I.S.</h2>
+                <p class="character-bio">
+                    Just A Rather Very Intelligent System. A inteligência artificial pioneira de Stark, responsável pelo suporte tático em combate, controle residencial e desenvolvimento de novos projetos de engenharia.
+                </p>
+                <div class="card-actions"></div>
+            </div>
+        </article>
+
+        <!-- CARD 3: SEXTA-FEIRA -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="friday.jpg" alt="Sexta-Feira" class="card-image">
+                <span class="badge badge-anime">IA Sucessora</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Sexta-Feira</h2>
+                <p class="character-bio">
+                    O sistema de IA substituto integrado às armaduras de Tony após a criação do Visão. Altamente eficiente em análise tática, gerenciamento de danos e protocolos de contingência globais.
+                </p>
+                <div class="card-actions"></div>
+            </div>
+        </article>
+
+        <!-- CARD 4: VISÃO -->
+        <article class="character-card">
+            <div class="card-image-wrapper">
+                <img src="visao.jpg" alt="Visão" class="card-image">
+                <span class="badge badge-anime">Vingador</span>
+            </div>
+            <div class="card-info">
+                <h2 class="character-name">Visão</h2>
+                <p class="character-bio">
+                    A evolução biomecânica definitiva nascida da fusão entre a inteligência do J.A.R.V.I.S., o poder da Joia da Mente e um corpo sintético de Vibranium. Altamente eficiente em computação quântica, manipulação de densidade corpórea e salvaguarda da humanidade contra ameaças de nível cósmico.
+                </p>
+                <div class="card-actions"></div>
+            </div>
+        </article>
+    </main>
+
+    <!-- JANELA MODAL PERSONALIZADA -->
+    <div id="modalStark" class="stark-modal-overlay">
+        <div class="stark-modal-box">
+            <h3 class="stark-modal-title">Acesso Restrito</h3>
+            <p class="stark-modal-text">
+                Protocolo de segurança ativado. Você precisa realizar seu <strong>cadastro</strong> antes de conversar com Tony Stark.
+            </p>
+            <div class="stark-modal-actions">
+                <button id="btnFecharModal" class="btn-stark-fechar">Voltar</button>
+                <a href="cadastro.html" class="btn-stark-cadastro">Fazer Cadastro</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const linkChat = document.getElementById('link-chat');
+            const modalStark = document.getElementById('modalStark');
+            const btnFecharModal = document.getElementById('btnFecharModal');
+
+            if (linkChat) {
+                linkChat.addEventListener('click', async (evento) => {
+                    evento.preventDefault();
+
+                    try {
+                        const resposta = await fetch('/api/meu-usuario');
+                        const dados = await resposta.json();
+
+                        if (resposta.ok && dados.logado) {
+                            window.location.href = 'chat.html';
+                        } else {
+                            modalStark.style.display = 'flex';
+                        }
+                    } catch (erro) {
+                        modalStark.style.display = 'flex';
+                    }
+                });
+            }
+
+            // Fecha o modal ao clicar em "Voltar" ou fora da caixa
+            btnFecharModal.addEventListener('click', () => {
+                modalStark.style.display = 'none';
+            });
+
+            modalStark.addEventListener('click', (e) => {
+                if (e.target === modalStark) {
+                    modalStark.style.display = 'none';
+                }
+            });
+        });
+
+        async function carregarPerfisDoServidor() {
+            try {
+                const resposta = await fetch('http://localhost:3000/perfis');
+                if (resposta.ok) {
+                    const perfis = await resposta.json();
+                    const grid = document.getElementById('gridPerfis');
+                    grid.innerHTML = '';
+                    
+                    perfis.forEach(perfil => {
+                        let badgeClass = 'badge-anime';
+                        if(perfil.tag === 'Criador') badgeClass = 'badge-marvel';
+                        if(perfil.tag === 'IA Original') badgeClass = 'badge-dc';
+
+                        grid.innerHTML += `
+                            <article class="character-card">
+                                <div class="card-image-wrapper">
+                                    <img src="${perfil.imagem}" alt="${perfil.nome}" class="card-image" onerror="this.src='https://unsplash.com'">
+                                    <span class="badge ${badgeClass}">${perfil.tag}</span>
+                                </div>
+                                <div class="card-info">
+                                    <h2 class="character-name">${perfil.nome}</h2>
+                                    <p class="character-bio">${perfil.descricao}</p>
+                                    <div class="card-actions">
+                                        <a href="#" class="btn-profile">Ver Perfil</a>
+                                    </div>
+                                </div>
+                            </article>
+                        `;
+                    });
+                }
+            } catch (erro) {
+                console.log("[STARK OS]: Rodando com dados locais pré-renderizados do HUD.");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', carregarPerfisDoServidor);
+    </script>
+</body>
+</html>

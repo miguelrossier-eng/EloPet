@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stark OS - Cadastro</title>
+    <style>
+        /* RESET E CONFIGURAÇÕES GERAIS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0c0f12; /* Fundo cinza bem escuro */
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* BARRA DE NAVEGAÇÃO SUPERIOR */
+        .main-header {
+            width: 100%;
+            background-color: #0c0f12;
+            border-bottom: 2px solid #a61212; /* Linha vermelha escura */
+            padding: 15px 40px;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-end; /* Links alinhados à direita */
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #7d848c; /* Cor cinza padrão para os links desativados */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-links a.active {
+            color: #e62429; /* Vermelho vivo para o link ativo (CADASTRO) */
+        }
+
+        /* CONTAINER DE ALINHAMENTO CENTRAL */
+        .cadastro-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* PAINEL DE CADASTRO ESTILO HUD */
+        .cadastro-box {
+            background-color: #11151d; /* Fundo interno azul escuro acinzentado */
+            border: 2px solid #b81414; /* Borda vermelha */
+            border-radius: 12px;
+            padding: 45px 35px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Detalhe decorativo amarelo no topo superior direito do card */
+        .cadastro-box::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 40px;
+            width: 35px;
+            height: 6px;
+            background-color: #ffcc00;
+            border-radius: 2px;
+        }
+
+        /* TÍTULO NOVO REGISTRO */
+        .cadastro-box h2 {
+            color: #ffcc00; /* Texto em amarelo dourado */
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 35px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* FORMULÁRIO */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00bcd4; /* Azul ciano vivo para as labels */
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .form-group input {
+            width: 100%;
+            background-color: #0a0d12; /* Inputs escuros */
+            border: 1px solid #16222f; /* Borda sutil azul escura */
+            border-radius: 6px;
+            padding: 14px 15px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #00bcd4;
+        }
+
+        /* Estilização dos placeholders internos */
+        .form-group input::placeholder {
+            color: #38424d;
+        }
+
+        /* BOTÃO ENVIAR */
+        #btnEnviar {
+            width: 100%;
+            background-color: #990000; /* Vermelho escuro de fundo */
+            color: #ffcc00; /* Texto do botão em amarelo dourado */
+            border: 2px solid #ffcc00; /* Borda amarela dourada */
+            border-radius: 6px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 15px;
+        }
+
+        #btnEnviar:hover {
+            background-color: #ffcc00;
+            color: #990000;
+        }
+
+        #btnEnviar:disabled {
+            background-color: #333;
+            border-color: #555;
+            color: #777;
+            cursor: not-allowed;
+        }
+
+        .links-footer {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .links-footer a {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* ÁREA DE RESPOSTA DO SISTEMA */
+        #resposta {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+
+        /* ESTILO DO MODAL STARK HUD */
+        .stark-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .stark-modal-box {
+            background: #11151d;
+            border: 2px solid #b81414;
+            box-shadow: 0 0 25px rgba(230, 36, 41, 0.45);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .stark-modal-box::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 30px;
+            width: 35px;
+            height: 6px;
+            background: #ffcc00;
+            border-radius: 2px;
+        }
+
+        .stark-modal-title {
+            color: #ffcc00;
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .stark-modal-text {
+            color: #cfd6e0;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .stark-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-stark-ok {
+            background: #990000;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+        .btn-stark-ok:hover {
+            background: #ffcc00;
+            color: #990000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ADAPTAÇÃO PARA CELULARES (@media) */
+        @media (max-width: 600px) {
+            .main-header {
+                padding: 15px 20px;
+            }
+            .header-container {
+                justify-content: center;
+            }
+            .nav-links {
+                gap: 15px;
+            }
+            .nav-links a {
+                font-size: 12px;
+            }
+            .cadastro-container {
+                padding: 20px 15px;
+            }
+            .cadastro-box {
+                padding: 35px 20px;
+            }
+            .cadastro-box h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
+    <header class="main-header">
+        <div class="header-container">
+            <nav class="nav-links">
+                <a href="home.html">HOME</a>
+                <a href="index.html">GALERIA</a>
+                <a href="cadastro.html" class="active">CADASTRO</a>
+                <a href="login.html">LOGIN</a>
+                <a href="chat.html" id="link-chat" class="classe-protegida">CHAT</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTAINER DE ALINHAMENTO CENTRAL -->
+    <main class="cadastro-container">
+        <!-- PAINEL DE CADASTRO ESTILO HUD -->
+        <div class="cadastro-box">
+            <h2>Novo Registro</h2>
+            
+            <form id="formCadastro">
+                <div class="form-group">
+                    <label for="usuario">Nome do usuário</label>
+                    <input type="text" id="usuario" name="usuario" required placeholder="digite seu nome de usuario">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="digite seu e-mail">
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required placeholder="crie uma senha com 6 digitos">
+                </div>
+
+                <button type="submit" id="btnEnviar">Enviar</button>
+            </form>
+             
+            <div class="links-footer">
+                <p style="color: #7d848c;">
+                    Já tem uma conta?
+                    <a href="login.html">Entrar</a>
+                </p>
+            </div>
+
+            <!-- ÁREA DE RESPOSTA DO SISTEMA -->
+            <div id="resposta"></div>
+        </div>
+    </main>
+
+    <!-- JANELA MODAL PERSONALIZADA -->
+    <div id="modalStark" class="stark-modal-overlay">
+        <div class="stark-modal-box">
+            <h3 class="stark-modal-title">Acesso Restrito</h3>
+            <p class="stark-modal-text">
+                Protocolo de segurança ativado. Complete seu <strong>cadastro</strong> abaixo antes de acessar o chat com Tony Stark.
+            </p>
+            <div class="stark-modal-actions">
+                <button id="btnFecharModal" class="btn-stark-ok">Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Intercepta clique no Chat caso ainda não esteja cadastrado/logado
+        document.addEventListener('DOMContentLoaded', () => {
+            const linkChat = document.getElementById('link-chat');
+            const modalStark = document.getElementById('modalStark');
+            const btnFecharModal = document.getElementById('btnFecharModal');
+
+            if (linkChat) {
+                linkChat.addEventListener('click', async (evento) => {
+                    evento.preventDefault();
+
+                    try {
+                        const resposta = await fetch('/api/meu-usuario');
+                        const dados = await resposta.json();
+
+                        if (resposta.ok && dados.logado) {
+                            window.location.href = 'chat.html';
+                        } else {
+                            modalStark.style.display = 'flex';
+                        }
+                    } catch (erro) {
+                        modalStark.style.display = 'flex';
+                    }
+                });
+            }
+
+            btnFecharModal.addEventListener('click', () => {
+                modalStark.style.display = 'none';
+            });
+
+            modalStark.addEventListener('click', (e) => {
+                if (e.target === modalStark) {
+                    modalStark.style.display = 'none';
+                }
+            });
+        });
+
+        // 2. Envio do formulário de cadastro
+        const form = document.getElementById('formCadastro');
+        const btnEnviar = document.getElementById('btnEnviar');
+        const respostaDiv = document.getElementById('resposta');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            btnEnviar.disabled = true;
+            respostaDiv.style.color = '#FFD700'; 
+            respostaDiv.innerText = 'Processando credenciais e acessando satélite...';
+
+            const nome = document.getElementById('usuario').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                const resposta = await fetch('/cadastro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, email, senha })
+                });
+
+                const dados = await resposta.json();
+
+                if (resposta.ok) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+
+                    respostaDiv.style.color = '#00E5FF'; 
+                    respostaDiv.innerText = 'Acesso Concedido! Iniciando conexão segura e direcionando para o Chat...';
+                    
+                    form.reset(); 
+                    
+                    setTimeout(() => {
+                        window.location.href = '/chat.html';
+                    }, 1500);
+
+                } else {
+                    respostaDiv.style.color = '#ff1a1a'; 
+                    respostaDiv.innerText = `Erro: ${dados.mensagem || dados.erro}`;
+                    btnEnviar.disabled = false;
+                }
+            } catch (erro) {
+                respostaDiv.style.color = '#ff1a1a'; 
+                respostaDiv.innerText = 'Falha crítica: Servidor Stark Offline.';
+                console.error(erro);
+                btnEnviar.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

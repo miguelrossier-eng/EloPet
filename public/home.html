@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stark OS - Home</title>
+
+    <style>
+        :root {
+            --stark-red: #8B0000;
+            --stark-bright-red: #ff1a1a;
+            --stark-gold: #FFD700;
+            --arc-blue: #00E5FF;
+            --dark-bg: #0C0F12;
+            --panel-bg: #11151d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont,
+                'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header.main-header {
+            width: 100%;
+            background-color: var(--dark-bg);
+            border-bottom: 2px solid #a61212;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav.nav-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav.nav-links a {
+            color: #7d848c;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            transition: color 0.2s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        nav.nav-links a:hover {
+            color: #ffffff;
+        }
+
+        nav.nav-links a.active {
+            color: #e62429;
+            border-bottom: 2px solid #e62429;
+            padding-bottom: 4px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: radial-gradient(
+                circle,
+                rgba(21,24,30,1) 0%,
+                rgba(9,10,12,1) 100%
+            );
+        }
+
+        .home-layout {
+            display: flex;
+            width: 100%;
+            max-width: 1100px;
+            gap: 50px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .welcome-box {
+            background-color: var(--panel-bg);
+            border: 2px solid #b81414;
+            border-radius: 12px;
+            padding: 45px 35px;
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+            text-align: left;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-box::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 40px;
+            width: 50px;
+            height: 6px;
+            background-color: var(--stark-gold);
+            border-radius: 2px;
+        }
+
+        .welcome-box h1 {
+            color: var(--stark-gold);
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .welcome-box p {
+            color: #8e959e;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            color: var(--arc-blue);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid var(--arc-blue);
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            background-color: rgba(0, 229, 255, 0.05);
+        }
+
+        .btn-chat-redirect {
+            display: inline-block;
+            width: 100%;
+            background-color: #990000;
+            color: var(--stark-gold);
+            border: 2px solid var(--stark-gold);
+            border-radius: 6px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-chat-redirect:hover:not(:disabled) {
+            background-color: var(--stark-gold);
+            color: #990000;
+        }
+
+        .btn-chat-redirect:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #msg-direcionando {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.6;
+            min-height: 20px;
+        }
+
+        .image-box {
+            flex: 1;
+            max-width: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 102, 0, 0.4);
+            box-shadow: 0 0 30px rgba(255, 102, 0, 0.3);
+            object-fit: cover;
+        }
+
+        /* ESTILO DO MODAL STARK HUD */
+        .stark-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .stark-modal-box {
+            background: #11151d;
+            border: 2px solid #b81414;
+            box-shadow: 0 0 25px rgba(230, 36, 41, 0.45);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .stark-modal-box::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: 30px;
+            width: 35px;
+            height: 6px;
+            background: var(--stark-gold);
+            border-radius: 2px;
+        }
+
+        .stark-modal-title {
+            color: var(--stark-gold);
+            font-size: 20px;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .stark-modal-text {
+            color: #cfd6e0;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .stark-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-stark-cadastro {
+            background: #990000;
+            color: var(--stark-gold);
+            border: 2px solid var(--stark-gold);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .btn-stark-cadastro:hover {
+            background: var(--stark-gold);
+            color: #990000;
+        }
+
+        .btn-stark-fechar {
+            background: transparent;
+            color: #8a94a6;
+            border: 1px solid #333a45;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+
+        .btn-stark-fechar:hover {
+            color: #fff;
+            border-color: #8a94a6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 850px) {
+            .home-layout {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .welcome-box,
+            .image-box {
+                max-width: 100%;
+            }
+
+            .image-box img {
+                max-width: 320px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header.main-header {
+                padding: 15px 10px;
+            }
+
+            nav.nav-links {
+                gap: 12px;
+            }
+
+            nav.nav-links a {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENU SUPERIOR -->
+    <header class="main-header">
+        <div class="header-container">
+            <nav class="nav-links">
+                <a href="home.html" class="active">HOME</a>
+                <a href="index.html">GALERIA</a>
+                <a href="cadastro.html">CADASTRO</a>
+                <a href="login.html">LOGIN</a>
+                <a href="chat.html" id="link-chat">CHAT</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main>
+        <div class="home-layout">
+
+            <div class="welcome-box">
+
+                <div class="status-badge">
+                    Sistemas de Defesa Operacionais
+                </div>
+
+                <h1>STARK OS</h1>
+
+                <p>
+                    Bem-vindo ao terminal central de comunicação da Torre Stark.
+                    Autentique suas credenciais de segurança e estabeleça conexão
+                    direta com o protocolo de inteligência artificial.
+                </p>
+
+                <button id="btn-inicializar" class="btn-chat-redirect">
+                    Inicializar Chat
+                </button>
+
+                <div id="msg-direcionando"></div>
+
+            </div>
+
+            <div class="image-box">
+                <img src="FRIDAY.jpg" alt="Interface HUD F.R.I.D.A.Y.">
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JANELA MODAL PERSONALIZADA -->
+    <div id="modalStark" class="stark-modal-overlay">
+        <div class="stark-modal-box">
+            <h3 class="stark-modal-title">Acesso Restrito</h3>
+            <p class="stark-modal-text">
+                Protocolo de segurança ativado. Você precisa realizar seu <strong>cadastro</strong> antes de conversar com Tony Stark.
+            </p>
+            <div class="stark-modal-actions">
+                <button id="btnFecharModal" class="btn-stark-fechar">Voltar</button>
+                <a href="cadastro.html" class="btn-stark-cadastro">Fazer Cadastro</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE AUTENTICAÇÃO E REDIRECIONAMENTO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const btnInicializar = document.getElementById('btn-inicializar');
+            const msgDirecionando = document.getElementById('msg-direcionando');
+            const linkChat = document.getElementById('link-chat');
+            const modalStark = document.getElementById('modalStark');
+            const btnFecharModal = document.getElementById('btnFecharModal');
+
+            let estaLogado = false;
+
+            // VERIFICA SE O USUÁRIO ESTÁ AUTENTICADO
+            try {
+                const resposta = await fetch('/api/meu-usuario');
+                if (resposta.ok) {
+                    const dados = await resposta.json();
+                    if (dados.logado) {
+                        estaLogado = true;
+                    }
+                }
+            } catch (erro) {
+                console.error('Erro ao verificar autenticação:', erro);
+            }
+
+            // INTERCEPTA CLIQUE NO LINK "CHAT" DO MENU SUPERIOR
+            if (linkChat) {
+                linkChat.addEventListener('click', (evento) => {
+                    evento.preventDefault();
+                    if (estaLogado) {
+                        window.location.href = 'chat.html';
+                    } else {
+                        modalStark.style.display = 'flex';
+                    }
+                });
+            }
+
+            // BOTÃO INICIALIZAR CHAT
+            btnInicializar.addEventListener('click', () => {
+                if (estaLogado) {
+                    btnInicializar.disabled = true;
+                    msgDirecionando.style.color = '#00e676';
+                    msgDirecionando.innerText = 'Acesso autorizado! Abrindo seu canal seguro de comunicação...';
+
+                    setTimeout(() => {
+                        window.location.href = 'chat.html';
+                    }, 1500);
+                } else {
+                    modalStark.style.display = 'flex';
+                }
+            });
+
+            // FECHAR MODAL
+            btnFecharModal.addEventListener('click', () => {
+                modalStark.style.display = 'none';
+            });
+
+            modalStark.addEventListener('click', (e) => {
+                if (e.target === modalStark) {
+                    modalStark.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

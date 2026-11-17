@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat com Stark</title>
+
+    <style>
+
+        /* RESET E CONFIGURAÇÕES GERAIS */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+            font-family: -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0c0f12;
+            color: #ffffff;
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            overflow-x: hidden;
+        }
+
+        /* BARRA DE NAVEGAÇÃO SUPERIOR */
+
+        .main-header {
+            width: 100%;
+            background-color: #0c0f12;
+
+            border-bottom: 2px solid #a61212;
+
+            padding: 15px 40px;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #7d848c;
+            text-decoration: none;
+
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 1px;
+
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-links a.active {
+            color: #e62429;
+        }
+
+        /* CONTAINER DO CHAT */
+
+        .chatContainer {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+
+            padding: 60px 20px;
+
+            max-width: 800px;
+            width: 100%;
+
+            margin: 0 auto;
+        }
+
+        /* TÍTULO DE BOAS-VINDAS */
+
+        #boasVindas {
+            color: #ffffff;
+
+            text-transform: uppercase;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+
+            margin-bottom: 30px;
+
+            text-align: center;
+        }
+
+        /* HISTÓRICO DE MENSAGENS */
+
+        #caixaChat {
+            width: 100%;
+
+            max-height: 400px;
+            overflow-y: auto;
+
+            margin-bottom: 20px;
+            padding: 10px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* MENSAGENS */
+
+        .msg {
+            background-color: rgba(255, 255, 255, 0.05);
+
+            padding: 12px 16px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            line-height: 1.5;
+
+            border-left: 3px solid #e62429;
+
+            max-width: 90%;
+
+            overflow-wrap: anywhere;
+        }
+
+        /* ÁREA DE ENTRADA */
+
+        #inputArea {
+            display: flex;
+
+            width: 100%;
+            max-width: 600px;
+
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* CAMPO DE MENSAGEM */
+
+        #mensagem {
+            flex: 1;
+
+            background-color: #11151d;
+
+            border: 1px solid #16222f;
+            border-radius: 6px;
+
+            padding: 14px 18px;
+
+            color: #ffffff;
+            font-size: 14px;
+
+            outline: none;
+
+            transition: border-color 0.2s;
+        }
+
+        #mensagem:focus {
+            border-color: #e62429;
+        }
+
+        #mensagem::placeholder {
+            color: #495460;
+        }
+
+        /* BOTÃO ENVIAR */
+
+        #btnEnviar {
+            background-color: #990000;
+            color: #ffffff;
+
+            border: none;
+            border-radius: 6px;
+
+            padding: 14px 28px;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: background-color 0.2s ease;
+        }
+
+        #btnEnviar:hover:not(:disabled) {
+            background-color: #b30000;
+        }
+
+        #btnEnviar:disabled {
+            background-color: #333;
+            color: #777;
+
+            cursor: not-allowed;
+        }
+
+        /* ADAPTAÇÃO PARA CELULARES */
+
+        @media (max-width: 600px) {
+
+            .main-header {
+                padding: 15px 20px;
+            }
+
+            .header-container {
+                justify-content: center;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .chatContainer {
+                padding: 30px 15px;
+            }
+
+            #boasVindas {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            #inputArea {
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            #mensagem {
+                padding: 12px 14px;
+                font-size: 13px;
+                min-width: 0;
+            }
+
+            #btnEnviar {
+                padding: 12px 20px;
+                font-size: 11px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- HEADER / MENU SUPERIOR -->
+
+    <header class="main-header">
+
+        <div class="header-container">
+
+            <nav class="nav-links">
+
+                <a href="home.html">HOME</a>
+
+                <a href="index.html">GALERIA</a>
+
+                <a href="cadastro.html">CADASTRO</a>
+
+                <a href="login.html">LOGIN</a>
+
+                <a href="chat.html" class="active">CHAT</a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTAINER DO CHAT -->
+
+    <div class="chatContainer">
+
+        <h2 id="boasVindas">
+            VERIFICANDO AUTENTICAÇÃO...
+        </h2>
+
+        <!-- HISTÓRICO DE MENSAGENS -->
+
+        <div id="caixaChat"></div>
+
+        <!-- ÁREA DE ENVIO -->
+
+        <div id="inputArea">
+
+            <input
+                type="text"
+                id="mensagem"
+                placeholder="Digite sua mensagem para o Tony Stark"
+                autocomplete="off"
+            >
+
+            <button id="btnEnviar" disabled>
+                Enviar
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SCRIPT PRINCIPAL -->
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        const boasVindas =
+            document.querySelector('#boasVindas');
+
+        const caixaChat =
+            document.querySelector('#caixaChat');
+
+        const inputMensagem =
+            document.querySelector('#mensagem');
+
+        const btnEnviar =
+            document.querySelector('#btnEnviar');
+
+
+        let usuarioLogado = '';
+
+        const historicoConversa = [];
+
+
+        // ==========================================
+        // 1. VERIFICAÇÃO DA SESSÃO DO USUÁRIO
+        // ==========================================
+
+        try {
+
+            const resUsuario = await fetch('/api/meu-usuario', {
+
+                method: 'GET',
+
+                credentials: 'same-origin'
+
+            });
+
+
+            if (!resUsuario.ok) {
+
+                window.location.replace('/login.html');
+
+                return;
+
+            }
+
+
+            const dadosUsuario = await resUsuario.json();
+
+
+            if (!dadosUsuario.logado || !dadosUsuario.nome) {
+
+                window.location.replace('/login.html');
+
+                return;
+
+            }
+
+
+            // IDENTIFICAÇÃO OBTIDA DA SESSÃO DO SERVIDOR
+
+            usuarioLogado = dadosUsuario.nome.toUpperCase();
+
+
+            boasVindas.textContent =
+                `OLÁ ${usuarioLogado}, BEM-VINDO`;
+
+
+            // LIBERA O CHAT APÓS VALIDAR A SESSÃO
+
+            btnEnviar.disabled = false;
+
+            inputMensagem.disabled = false;
+
+
+        } catch (erro) {
+
+            console.error(
+                'Erro ao verificar autenticação:',
+                erro
+            );
+
+            window.location.replace('/login.html');
+
+            return;
+
+        }
+
+
+        // ==========================================
+        // 2. EXIBIR MENSAGENS NA TELA
+        // ==========================================
+
+        function mensagemTela(autor, texto) {
+
+            const textoFinal = document.createElement('p');
+
+            textoFinal.className = 'msg';
+
+
+            // NÃO INTERPRETA O CONTEÚDO COMO HTML
+
+            textoFinal.textContent = `${autor}: ${texto}`;
+
+
+            caixaChat.appendChild(textoFinal);
+
+            caixaChat.scrollTop =
+                caixaChat.scrollHeight;
+
+        }
+
+
+        // ==========================================
+        // 3. ENVIO DE MENSAGENS
+        // ==========================================
+
+        async function enviarMensagem() {
+
+            const textoMensagem =
+                inputMensagem.value.trim();
+
+
+            if (!textoMensagem || btnEnviar.disabled) {
+
+                return;
+
+            }
+
+
+            // EXIBE A MENSAGEM DO USUÁRIO
+
+            mensagemTela(
+                usuarioLogado,
+                textoMensagem
+            );
+
+
+            historicoConversa.push({
+
+                role: 'user',
+
+                content: textoMensagem
+
+            });
+
+
+            inputMensagem.value = '';
+
+            btnEnviar.disabled = true;
+
+
+            try {
+
+                const respostaServidor = await fetch(
+                    '/enviar-mensagem',
+                    {
+
+                        method: 'POST',
+
+                        credentials: 'same-origin',
+
+                        headers: {
+
+                            'Content-Type': 'application/json'
+
+                        },
+
+                        body: JSON.stringify({
+
+                            // O NOME NÃO É MAIS ENVIADO.
+                            // O SERVIDOR DEVE IDENTIFICAR O USUÁRIO
+                            // UTILIZANDO A SESSÃO AUTENTICADA.
+
+                            historico: historicoConversa,
+
+                            mensagem: textoMensagem
+
+                        })
+
+                    }
+                );
+
+
+                const dados =
+                    await respostaServidor.json();
+
+
+                // VERIFICA SE A SESSÃO EXPIROU
+
+                if (respostaServidor.status === 401) {
+
+                    window.location.replace('/login.html');
+
+                    return;
+
+                }
+
+
+                // VERIFICA ERROS DO SERVIDOR
+
+                if (!respostaServidor.ok) {
+
+                    mensagemTela(
+                        'Sistema',
+                        dados.erro || 'Erro ao processar mensagem.'
+                    );
+
+                    return;
+
+                }
+
+
+                // EXIBE A RESPOSTA DA IA
+
+                mensagemTela(
+                    'Tony Stark',
+                    dados.resposta
+                );
+
+
+                historicoConversa.push({
+
+                    role: 'assistant',
+
+                    content: dados.resposta
+
+                });
+
+
+            } catch (erro) {
+
+                console.error(
+                    'Erro ao enviar mensagem:',
+                    erro
+                );
+
+                mensagemTela(
+                    'Sistema',
+                    'Erro ao conectar com o servidor Stark.'
+                );
+
+            } finally {
+
+                btnEnviar.disabled = false;
+
+                inputMensagem.focus();
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 4. EVENTO DO BOTÃO ENVIAR
+        // ==========================================
+
+        btnEnviar.addEventListener(
+            'click',
+            enviarMensagem
+        );
+
+
+        // ==========================================
+        // 5. ENVIAR COM A TECLA ENTER
+        // ==========================================
+
+        inputMensagem.addEventListener(
+            'keydown',
+            (evento) => {
+
+                if (evento.key === 'Enter') {
+
+                    evento.preventDefault();
+
+                    enviarMensagem();
+
+                }
+
+            }
+        );
+
+
+    });
+
+    </script>
+
+</body>
+
+</html>
