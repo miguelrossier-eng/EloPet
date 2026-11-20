@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stark OS - Perfil</title>
+  <style>
+    :root {
+      --bg: #0a0d12;
+      --card: #111620;
+      --input: #0b0f16;
+      --red: #c01818;
+      --red-dark: #990000;
+      --yellow: #ffc800;
+      --cyan: #00bcd4;
+      --text: #e6e9ef;
+      --muted: #7d8696;
+      --line: #1d2432;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "Segoe UI", Arial, sans-serif; min-height: 100vh; }
+    button { font-family: inherit; }
+
+    /* NAV */
+    nav { display: flex; justify-content: flex-end; gap: 28px; padding: 18px 60px; border-bottom: 1px solid var(--red); background: #080b10; flex-wrap: wrap; }
+    nav a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+    nav a:hover, nav a.ativo, nav a.active { color: var(--red); }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+    .card { background: var(--card); border: 1px solid var(--red); border-radius: 12px; overflow: hidden; }
+
+    /* BANNER (temas) */
+    .banner { height: 160px; background: linear-gradient(135deg, #8b0000, #2a0a0a 60%, #0a1a22); }
+    .banner[data-tema="ciano"]   { background: linear-gradient(135deg, #006978, #0a2a33 60%, #0a0d12); }
+    .banner[data-tema="dourado"] { background: linear-gradient(135deg, #8a6d00, #2a2200 60%, #0a0d12); }
+    .banner[data-tema="roxo"]    { background: linear-gradient(135deg, #4a148c, #1a0a2a 60%, #0a0d12); }
+    .banner[data-tema="verde"]   { background: linear-gradient(135deg, #1b5e20, #0a2a12 60%, #0a0d12); }
+    .banner[data-tema="noite"]   { background: linear-gradient(135deg, #1c2433, #0f141c 60%, #0a0d12); }
+
+    /* CABEÇALHO DO PERFIL */
+    .perfil-topo { padding: 0 24px 20px; position: relative; }
+    .avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--card); background: #1b2230 center/cover no-repeat; margin-top: -55px; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; color: var(--yellow); overflow: hidden; }
+    .btn { cursor: pointer; border-radius: 8px; padding: 10px 20px; font-weight: 700; letter-spacing: 1px; font-size: 13px; text-transform: uppercase; }
+    .btn-editar { position: absolute; right: 24px; top: 16px; background: transparent; color: var(--cyan); border: 2px solid var(--cyan); }
+    .btn-editar:hover { background: var(--cyan); color: #000; }
+    .nome { font-size: 24px; font-weight: 800; margin-top: 12px; color: var(--yellow); overflow-wrap: anywhere; }
+    .usuario { color: var(--cyan); font-size: 14px; overflow-wrap: anywhere; }
+    .cidade { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .bio { margin-top: 10px; color: var(--text); font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+    .stats { display: flex; gap: 24px; margin-top: 14px; color: var(--muted); font-size: 14px; }
+    .stats b { color: var(--text); }
+
+    /* ABAS */
+    .abas { display: flex; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .aba { flex: 1; text-align: center; padding: 14px; color: var(--muted); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none; border-bottom: 3px solid transparent; background: transparent; }
+    .aba.ativa { color: var(--yellow); border-bottom-color: var(--yellow); }
+    .painel { padding: 20px 24px; min-height: 200px; display: none; }
+    .painel.ativo { display: block; }
+
+    /* POSTS */
+    .composer textarea { min-height: 70px; }
+    .composer-rodape { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+    .contador { color: var(--muted); font-size: 12px; }
+    .btn-publicar { background: var(--red-dark); color: var(--yellow); border: 2px solid var(--yellow); padding: 8px 18px; }
+    .btn-publicar:hover:not(:disabled) { background: var(--yellow); color: var(--red-dark); }
+    .btn-publicar:disabled { opacity: .5; cursor: not-allowed; }
+    #listaPosts { margin-top: 18px; }
+    .post { padding: 14px 0; border-top: 1px solid var(--line); }
+    .post-topo { display: flex; align-items: center; gap: 10px; }
+    .post-quem { font-weight: 700; }
+    .post small { color: var(--muted); }
+    .post p { margin-top: 6px; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .link-excluir { margin-left: auto; background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; }
+    .link-excluir:hover { color: #ff4d4d; }
+    .vazio { color: var(--muted); text-align: center; padding: 30px 0; }
+
+    /* CONFIGURAÇÕES */
+    .secao { margin-bottom: 28px; }
+    .secao h3 { color: var(--yellow); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .secao .desc { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+    .perigo { border: 1px solid #5a1212; border-radius: 10px; padding: 16px; background: rgba(153, 0, 0, .08); }
+    .btn-perigo { background: transparent; color: #ff6b6b; border: 2px solid #ff4d4d; margin-top: 10px; }
+    .btn-perigo:hover { background: #ff4d4d; color: #000; }
+
+    /* LATERAL */
+    aside .card { padding: 18px; margin-bottom: 20px; }
+    aside h3 { color: var(--yellow); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    aside li { list-style: none; padding: 8px 0; color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+    aside li:last-child { border-bottom: none; }
+    aside li b { color: var(--cyan); }
+    .barra { height: 8px; background: var(--input); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+    .barra div { height: 100%; width: 0; background: linear-gradient(90deg, var(--red-dark), var(--yellow)); transition: width .3s; }
+    .check li::before { content: "○  "; color: var(--muted); }
+    .check li.feito { color: var(--text); }
+    .check li.feito::before { content: "●  "; color: var(--yellow); }
+
+    /* FORMULÁRIOS */
+    label { display: block; color: var(--cyan); font-size: 12px; font-weight: 700; letter-spacing: 1px; margin: 14px 0 6px; text-transform: uppercase; }
+    input[type="text"], input[type="password"], textarea { width: 100%; background: var(--input); border: 1px solid var(--line); border-radius: 8px; padding: 12px; color: var(--text); font-size: 14px; font-family: inherit; }
+    input:focus, textarea:focus { outline: none; border-color: var(--cyan); }
+    textarea { resize: vertical; min-height: 80px; }
+    .btn-salvar { background: var(--red-dark); color: var(--yellow); border: 2px solid var(--yellow); }
+    .btn-salvar:hover { background: var(--yellow); color: var(--red-dark); }
+    .btn-cancelar { background: transparent; color: var(--muted); border: 2px solid #2a3140; }
+
+    /* MODAIS */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); align-items: center; justify-content: center; z-index: 10; padding: 16px; }
+    .modal.aberto { display: flex; }
+    .modal .card { width: 460px; max-width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px; }
+    .modal h2 { color: var(--yellow); text-align: center; margin-bottom: 8px; letter-spacing: 1px; font-size: 20px; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+    .modal-btns .btn { flex: 1; }
+
+    .foto-linha { display: flex; align-items: center; gap: 16px; margin-top: 6px; }
+    .foto-prev { width: 72px; height: 72px; border-radius: 50%; background: #1b2230 center/cover no-repeat; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: var(--yellow); flex-shrink: 0; overflow: hidden; }
+    .foto-acoes { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .btn-mini { background: transparent; color: var(--cyan); border: 1px solid var(--cyan); padding: 6px 12px; font-size: 11px; }
+    .btn-mini:hover { background: var(--cyan); color: #000; }
+    .btn-mini.sec { color: var(--muted); border-color: #2a3140; }
+    .btn-mini.sec:hover { background: #2a3140; color: #fff; }
+    input[type="file"] { display: none; }
+
+    .temas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .tema { width: 38px; height: 38px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; }
+    .tema.sel { border-color: var(--yellow); box-shadow: 0 0 0 2px rgba(255, 200, 0, .25); }
+    .tema[data-tema="vermelho"] { background: linear-gradient(135deg, #8b0000, #2a0a0a); }
+    .tema[data-tema="ciano"]    { background: linear-gradient(135deg, #006978, #0a2a33); }
+    .tema[data-tema="dourado"]  { background: linear-gradient(135deg, #8a6d00, #2a2200); }
+    .tema[data-tema="roxo"]     { background: linear-gradient(135deg, #4a148c, #1a0a2a); }
+    .tema[data-tema="verde"]    { background: linear-gradient(135deg, #1b5e20, #0a2a12); }
+    .tema[data-tema="noite"]    { background: linear-gradient(135deg, #1c2433, #0f141c); }
+
+    /* AVISO */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); background: #11151d; border: 1px solid var(--cyan); color: var(--text); padding: 12px 20px; border-radius: 8px; font-size: 14px; opacity: 0; pointer-events: none; transition: all .25s; z-index: 50; max-width: 90vw; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.erro { border-color: #ff4d4d; color: #ff9b9b; }
+
+    @media (max-width: 860px) {
+      .container { grid-template-columns: 1fr; }
+      nav { padding: 14px 20px; gap: 18px; }
+      .btn-editar { position: static; margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="index.html">Galeria</a>
+    <a href="chat.html">Chat</a>
+    <a href="perfil.html" class="ativo">Perfil</a>
+    <a href="/logout" id="btnSair">Sair</a>
+  </nav>
+
+  <main class="container">
+    <section class="card">
+      <div class="banner" id="banner" data-tema="vermelho"></div>
+      <div class="perfil-topo">
+        <div class="avatar" id="avatar">?</div>
+        <button class="btn btn-editar" id="btnEditar">Editar perfil</button>
+        <div class="nome" id="nome">Carregando...</div>
+        <div class="usuario" id="usuario"></div>
+        <div class="cidade" id="cidade"></div>
+        <p class="bio" id="bio"></p>
+        <div class="stats">
+          <span><b id="statPosts">0</b> posts</span>
+        </div>
+      </div>
+
+      <div class="abas">
+        <button class="aba ativa" data-aba="posts">Meus posts</button>
+        <button class="aba" data-aba="config">Configurações</button>
+      </div>
+
+      <!-- ABA POSTS -->
+      <div class="painel ativo" id="painel-posts">
+        <div class="composer">
+          <textarea id="novoPost" maxlength="280" placeholder="O que você quer compartilhar?"></textarea>
+          <div class="composer-rodape">
+            <span class="contador" id="contador">0/280</span>
+            <button class="btn btn-publicar" id="btnPublicar">Publicar</button>
+          </div>
+        </div>
+        <div id="listaPosts"></div>
+      </div>
+
+      <!-- ABA CONFIGURAÇÕES -->
+      <div class="painel" id="painel-config">
+        <div class="secao">
+          <h3>Alterar senha</h3>
+          <p class="desc">Use pelo menos 6 caracteres.</p>
+          <form id="formSenha">
+            <label for="senhaAtual">Senha atual</label>
+            <input type="password" id="senhaAtual" autocomplete="current-password" required>
+            <label for="novaSenha">Nova senha</label>
+            <input type="password" id="novaSenha" autocomplete="new-password" required>
+            <label for="confSenha">Confirmar nova senha</label>
+            <input type="password" id="confSenha" autocomplete="new-password" required>
+            <button type="submit" class="btn btn-salvar" style="margin-top:16px">Salvar nova senha</button>
+          </form>
+        </div>
+
+        <div class="secao perigo">
+          <h3 style="color:#ff6b6b">Zona de perigo</h3>
+          <p class="desc">Excluir a conta apaga seu perfil e todos os seus posts. Isso não pode ser desfeito.</p>
+          <button class="btn btn-perigo" id="btnAbrirExcluir">Excluir minha conta</button>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <div class="card">
+        <h3>Sobre a conta</h3>
+        <ul>
+          <li>E-mail: <b id="infoEmail">-</b></li>
+          <li>Membro desde: <b id="infoData">-</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Perfil completo</h3>
+        <div class="barra"><div id="barraProgresso"></div></div>
+        <ul class="check" id="checklist"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- MODAL: EDITAR PERFIL -->
+  <div class="modal" id="modalEditar">
+    <div class="card">
+      <h2>EDITAR PERFIL</h2>
+
+      <label>Foto de perfil</label>
+      <div class="foto-linha">
+        <div class="foto-prev" id="fotoPrev">?</div>
+        <div class="foto-acoes">
+          <button type="button" class="btn btn-mini" id="btnEscolherFoto">Escolher foto</button>
+          <button type="button" class="btn btn-mini sec" id="btnRemoverFoto">Remover foto</button>
+        </div>
+        <input type="file" id="arquivoFoto" accept="image/*">
+      </div>
+
+      <label>Cor do banner</label>
+      <div class="temas" id="temas"></div>
+
+      <label for="editNome">Nome do usuário</label>
+      <input type="text" id="editNome" maxlength="30">
+
+      <label for="editCidade">Cidade</label>
+      <input type="text" id="editCidade" maxlength="40" placeholder="ex.: Curitiba, PR">
+
+      <label for="editBio">Bio</label>
+      <textarea id="editBio" maxlength="160" placeholder="fale um pouco sobre você"></textarea>
+
+      <div class="modal-btns">
+        <button class="btn btn-cancelar" data-fechar="modalEditar">Cancelar</button>
+        <button class="btn btn-salvar" id="btnSalvar">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EXCLUIR CONTA -->
+  <div class="modal" id="modalExcluir">
+    <div class="card">
+      <h2 style="color:#ff6b6b">EXCLUIR CONTA</h2>
+      <p style="color:var(--muted);font-size:14px;text-align:center;margin-bottom:6px">
+        Digite sua senha para confirmar. Esta ação é permanente.
+      </p>
+      <label for="senhaExcluir">Senha</label>
+      <input type="password" id="senhaExcluir" autocomplete="current-password">
+      <div class="modal-btns">
+        <button class="btn btn-cancelar" data-fechar="modalExcluir">Cancelar</button>
+        <button class="btn btn-perigo" style="margin-top:0" id="btnConfirmarExcluir">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const TEMAS = ['vermelho', 'ciano', 'dourado', 'roxo', 'verde', 'noite'];
+    let u = {};
+    let temaEscolhido = 'vermelho';
+    let novoAvatar; // undefined = não mudou | '' = remover | texto base64 = nova foto
+
+    /* ---------- utilidades ---------- */
+
+    function toast(msg, erro) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.className = 'toast show' + (erro ? ' erro' : '');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => { t.className = 'toast'; }, 3500);
+    }
+
+    async function api(url, metodo, corpo) {
+      const opcoes = { method: metodo || 'GET', credentials: 'same-origin' };
+      if (corpo !== undefined) {
+        opcoes.headers = { 'Content-Type': 'application/json' };
+        opcoes.body = JSON.stringify(corpo);
+      }
+      const r = await fetch(url, opcoes);
+      let d = {};
+      try { d = await r.json(); } catch (_) {}
+      if (r.status === 401) { location.replace('login.html'); throw new Error('Sessão expirada.'); }
+      if (!r.ok) throw new Error(d.erro || 'Algo deu errado. Tente de novo.');
+      return d;
+    }
+
+    function abrir(id) { $(id).classList.add('aberto'); }
+    function fechar(id) { $(id).classList.remove('aberto'); }
+
+    function pintarFoto(el, src, nome) {
+      if (src) { el.style.backgroundImage = 'url("' + src + '")'; el.textContent = ''; }
+      else { el.style.backgroundImage = 'none'; el.textContent = (nome || '?').charAt(0).toUpperCase(); }
+    }
+
+    /* ---------- perfil ---------- */
+
+    function renderChecklist() {
+      const itens = [
+        ['Foto de perfil', !!u.avatar],
+        ['Bio preenchida', !!u.bio],
+        ['Cidade informada', !!u.cidade],
+        ['Primeiro post publicado', (u.totalPosts || 0) > 0]
+      ];
+      const ul = $('checklist');
+      ul.textContent = '';
+      let feitos = 0;
+      itens.forEach(([texto, ok]) => {
+        const li = document.createElement('li');
+        li.textContent = texto;
+        if (ok) { li.className = 'feito'; feitos++; }
+        ul.appendChild(li);
+      });
+      $('barraProgresso').style.width = Math.round((feitos / itens.length) * 100) + '%';
+    }
+
+    function render() {
+      $('banner').setAttribute('data-tema', u.banner || 'vermelho');
+      pintarFoto($('avatar'), u.avatar, u.nome);
+      $('nome').textContent = u.nome || '';
+      $('usuario').textContent = '@' + (u.nome || '').toLowerCase().replace(/\s+/g, '');
+      $('cidade').textContent = u.cidade ? 'Cidade: ' + u.cidade : '';
+      $('bio').textContent = u.bio || 'Sem bio ainda.';
+      $('statPosts').textContent = u.totalPosts || 0;
+      $('infoEmail').textContent = u.email || '-';
+      $('infoData').textContent = u.criadoEm ? new Date(u.criadoEm).toLocaleDateString('pt-BR') : '-';
+      renderChecklist();
+    }
+
+    async function carregarUsuario() {
+      const d = await api('/api/meu-usuario');
+      if (!d.logado) { location.replace('login.html'); return; }
+      u = d;
+      render();
+    }
+
+    /* ---------- posts ---------- */
+
+    async function carregarPosts() {
+      const posts = await api('/api/meus-posts');
+      u.totalPosts = posts.length;
+      $('statPosts').textContent = posts.length;
+      renderChecklist();
+
+      const lista = $('listaPosts');
+      lista.textContent = '';
+
+      if (!posts.length) {
+        const v = document.createElement('div');
+        v.className = 'vazio';
+        v.textContent = 'Você ainda não publicou nada.';
+        lista.appendChild(v);
+        return;
+      }
+
+      posts.forEach((p) => {
+        const el = document.createElement('div');
+        el.className = 'post';
+
+        const topo = document.createElement('div');
+        topo.className = 'post-topo';
+
+        const quem = document.createElement('span');
+        quem.className = 'post-quem';
+        quem.textContent = u.nome;
+
+        const data = document.createElement('small');
+        data.textContent = new Date(p.criadoEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+        const del = document.createElement('button');
+        del.className = 'link-excluir';
+        del.textContent = 'Excluir';
+        del.onclick = () => excluirPost(p.id);
+
+        topo.append(quem, data, del);
+
+        const txt = document.createElement('p');
+        txt.textContent = p.texto;
+
+        el.append(topo, txt);
+        lista.appendChild(el);
+      });
+    }
+
+    async function excluirPost(id) {
+      if (!confirm('Excluir este post?')) return;
+      try {
+        await api('/api/posts/' + encodeURIComponent(id), 'DELETE');
+        await carregarPosts();
+        toast('Post excluído.');
+      } catch (e) { toast(e.message, true); }
+    }
+
+    function atualizarContador() {
+      $('contador').textContent = $('novoPost').value.length + '/280';
+    }
+    $('novoPost').addEventListener('input', atualizarContador);
+
+    $('btnPublicar').onclick = async () => {
+      const texto = $('novoPost').value.trim();
+      if (!texto) return;
+      $('btnPublicar').disabled = true;
+      try {
+        await api('/api/posts', 'POST', { texto });
+        $('novoPost').value = '';
+        atualizarContador();
+        await carregarPosts();
+        toast('Publicado!');
+      } catch (e) { toast(e.message, true); }
+      finally { $('btnPublicar').disabled = false; }
+    };
+
+    /* ---------- abas ---------- */
+
+    document.querySelectorAll('.aba').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        document.querySelectorAll('.aba').forEach((b) => b.classList.remove('ativa'));
+        document.querySelectorAll('.painel').forEach((p) => p.classList.remove('ativo'));
+        botao.classList.add('ativa');
+        $('painel-' + botao.dataset.aba).classList.add('ativo');
+      });
+    });
+
+    /* ---------- modais ---------- */
+
+    document.querySelectorAll('[data-fechar]').forEach((b) => {
+      b.addEventListener('click', () => fechar(b.dataset.fechar));
+    });
+    document.querySelectorAll('.modal').forEach((m) => {
+      m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('aberto'); });
+    });
+
+    /* ---------- editar perfil ---------- */
+
+    TEMAS.forEach((t) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tema';
+      b.setAttribute('data-tema', t);
+      b.title = t;
+      b.onclick = () => { temaEscolhido = t; marcarTema(); };
+      $('temas').appendChild(b);
+    });
+
+    function marcarTema() {
+      document.querySelectorAll('.tema').forEach((b) => {
+        b.classList.toggle('sel', b.getAttribute('data-tema') === temaEscolhido);
+      });
+    }
+
+    $('btnEditar').onclick = () => {
+      $('editNome').value = u.nome || '';
+      $('editCidade').value = u.cidade || '';
+      $('editBio').value = u.bio || '';
+      temaEscolhido = u.banner || 'vermelho';
+      novoAvatar = undefined;
+      marcarTema();
+      pintarFoto($('fotoPrev'), u.avatar, u.nome);
+      abrir('modalEditar');
+    };
+
+    $('btnEscolherFoto').onclick = () => $('arquivoFoto').click();
+
+    $('btnRemoverFoto').onclick = () => {
+      novoAvatar = '';
+      pintarFoto($('fotoPrev'), '', $('editNome').value);
+    };
+
+    // Reduz a foto para 256x256 (recorte quadrado) antes de enviar
+    function reduzirImagem(arquivo, lado) {
+      return new Promise((ok, falha) => {
+        const url = URL.createObjectURL(arquivo);
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = lado; c.height = lado;
+          const ctx = c.getContext('2d');
+          const m = Math.min(img.width, img.height);
+          ctx.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, lado, lado);
+          URL.revokeObjectURL(url);
+          ok(c.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); falha(new Error('imagem')); };
+        img.src = url;
+      });
+    }
+
+    $('arquivoFoto').onchange = async (e) => {
+      const f = e.target.files[0];
+      e.target.value = '';
+      if (!f) return;
+      if (!f.type.startsWith('image/')) { toast('Escolha um arquivo de imagem.', true); return; }
+      if (f.size > 8 * 1024 * 1024) { toast('A imagem é grande demais (máx. 8 MB).', true); return; }
+      try {
+        novoAvatar = await reduzirImagem(f, 256);
+        pintarFoto($('fotoPrev'), novoAvatar, $('editNome').value);
+      } catch (_) { toast('Não foi possível ler essa imagem.', true); }
+    };
+
+    $('btnSalvar').onclick = async () => {
+      const corpo = {
+        nome: $('editNome').value.trim(),
+        cidade: $('editCidade').value.trim(),
+        bio: $('editBio').value.trim(),
+        banner: temaEscolhido
+      };
+      if (novoAvatar !== undefined) corpo.avatar = novoAvatar;
+      try {
+        await api('/api/perfil', 'PUT', corpo);
+        fechar('modalEditar');
+        await carregarUsuario();
+        await carregarPosts();
+        toast('Perfil atualizado!');
+      } catch (e) { toast(e.message, true); }
+    };
+
+    /* ---------- trocar senha ---------- */
+
+    $('formSenha').onsubmit = async (e) => {
+      e.preventDefault();
+      const senhaAtual = $('senhaAtual').value;
+      const novaSenha = $('novaSenha').value;
+      if (novaSenha.length < 6) { toast('A nova senha deve ter pelo menos 6 caracteres.', true); return; }
+      if (novaSenha !== $('confSenha').value) { toast('A confirmação não confere com a nova senha.', true); return; }
+      try {
+        await api('/api/senha', 'PUT', { senhaAtual, novaSenha });
+        e.target.reset();
+        toast('Senha alterada com sucesso!');
+      } catch (err) { toast(err.message, true); }
+    };
+
+    /* ---------- excluir conta ---------- */
+
+    $('btnAbrirExcluir').onclick = () => { $('senhaExcluir').value = ''; abrir('modalExcluir'); };
+
+    $('btnConfirmarExcluir').onclick = async () => {
+      try {
+        await api('/api/conta', 'DELETE', { senha: $('senhaExcluir').value });
+        location.replace('cadastro.html');
+      } catch (e) { toast(e.message, true); }
+    };
+
+    /* ---------- início ---------- */
+
+    carregarUsuario().then(carregarPosts).catch(() => {});
+  })();
+  </script>
+  <script>
+// Verificação de login: esconde Cadastro/Login e mostra Perfil/Sair
+// Usa a sessão do servidor (rota /api/meu-usuario), a mesma que o seu login já usa.
+(function () {
+  const pagina = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+  // Evita "piscar" os links errados enquanto o servidor responde
+  const estilo = document.createElement('style');
+  estilo.textContent =
+    'nav a[href="cadastro.html"], nav a[href="login.html"], nav a[href="perfil.html"], #btnSair { visibility: hidden; }';
+  document.head.appendChild(estilo);
+
+  function aplicar(logado) {
+    // Cadastro e Login somem para quem está logado; Perfil e Sair só aparecem para quem está logado
+    const mostrar = (seletor, visivel) =>
+      document.querySelectorAll(seletor).forEach((el) => {
+        el.style.display = visivel ? '' : 'none';
+        el.style.visibility = 'visible';
+      });
+
+    mostrar('nav a[href="cadastro.html"]', !logado);
+    mostrar('nav a[href="login.html"]', !logado);
+    mostrar('nav a[href="perfil.html"]', logado);
+    mostrar('#btnSair', logado);
+
+    // Só o link da página atual fica vermelho (hoje todos estão com class="active")
+    document.querySelectorAll('nav a').forEach((a) => {
+      a.classList.toggle('active', (a.getAttribute('href') || '').toLowerCase() === pagina);
+    });
+  }
+
+  // Botão Sair: <a href="#" id="btnSair">Sair</a>
+  const sair = document.getElementById('btnSair');
+  if (sair) {
+    sair.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try { await fetch('/logout', { method: 'POST', credentials: 'same-origin' }); } catch (_) {}
+      location.href = 'login.html';
+    });
+  }
+
+  fetch('/api/meu-usuario', { credentials: 'same-origin' })
+    .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+    .then(({ ok, d }) => {
+      const logado = ok && !!d.logado;
+
+      // Já logado e abriu cadastro/login -> vai direto para o perfil
+      if (logado && (pagina === 'cadastro.html' || pagina === 'login.html')) {
+        location.replace('perfil.html');
+        return;
+      }
+      // Página protegida (<body data-protegida>) sem login -> volta para o login
+      if (!logado && document.body.hasAttribute('data-protegida')) {
+        location.replace('login.html');
+        return;
+      }
+      aplicar(logado);
+    })
+    .catch(() => aplicar(false));
+})();
+</script>
+</body>
+</html>

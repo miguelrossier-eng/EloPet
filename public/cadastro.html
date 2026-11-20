@@ -305,12 +305,17 @@
     <!-- HEADER / MENU DE NAVEGAÇÃO SUPERIOR -->
     <header class="main-header">
         <div class="header-container">
+            <div class="logo">
+                <span class="highlight"></span>
+            </div>
             <nav class="nav-links">
-                <a href="home.html">HOME</a>
-                <a href="index.html">GALERIA</a>
+                <a href="home.html" class="active">HOME</a>
+                <a href="index.html" class="active">GALERIA</a>
                 <a href="cadastro.html" class="active">CADASTRO</a>
-                <a href="login.html">LOGIN</a>
+                <a href="login.html" class="active">LOGIN</a>
                 <a href="chat.html" id="link-chat" class="classe-protegida">CHAT</a>
+                <a href="perfil.html">PERFIL</a>
+                <a href="/logout" id="btnSair">SAIR</a>
             </nav>
         </div>
     </header>
@@ -455,5 +460,66 @@
             }
         });
     </script>
+    <script>
+// Verificação de login: esconde Cadastro/Login e mostra Perfil/Sair
+// Usa a sessão do servidor (rota /api/meu-usuario), a mesma que o seu login já usa.
+(function () {
+  const pagina = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+  // Evita "piscar" os links errados enquanto o servidor responde
+  const estilo = document.createElement('style');
+  estilo.textContent =
+    'nav a[href="cadastro.html"], nav a[href="login.html"], nav a[href="perfil.html"], #btnSair { visibility: hidden; }';
+  document.head.appendChild(estilo);
+
+  function aplicar(logado) {
+    // Cadastro e Login somem para quem está logado; Perfil e Sair só aparecem para quem está logado
+    const mostrar = (seletor, visivel) =>
+      document.querySelectorAll(seletor).forEach((el) => {
+        el.style.display = visivel ? '' : 'none';
+        el.style.visibility = 'visible';
+      });
+
+    mostrar('nav a[href="cadastro.html"]', !logado);
+    mostrar('nav a[href="login.html"]', !logado);
+    mostrar('nav a[href="perfil.html"]', logado);
+    mostrar('#btnSair', logado);
+
+    // Só o link da página atual fica vermelho (hoje todos estão com class="active")
+    document.querySelectorAll('nav a').forEach((a) => {
+      a.classList.toggle('active', (a.getAttribute('href') || '').toLowerCase() === pagina);
+    });
+  }
+
+  // Botão Sair: <a href="/logout" id="btnSair">Sair</a>
+  const sair = document.getElementById('btnSair');
+  if (sair) {
+    sair.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try { await fetch('/logout', { method: 'POST', credentials: 'same-origin' }); } catch (_) {}
+      location.href = 'login.html';
+    });
+  }
+
+  fetch('/api/meu-usuario', { credentials: 'same-origin' })
+    .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+    .then(({ ok, d }) => {
+      const logado = ok && !!d.logado;
+
+      // Já logado e abriu cadastro/login -> vai direto para o perfil
+      if (logado && (pagina === 'cadastro.html' || pagina === 'login.html')) {
+        location.replace('perfil.html');
+        return;
+      }
+      // Página protegida (<body data-protegida>) sem login -> volta para o login
+      if (!logado && document.body.hasAttribute('data-protegida')) {
+        location.replace('login.html');
+        return;
+      }
+      aplicar(logado);
+    })
+    .catch(() => aplicar(false));
+})();
+</script>
 </body>
 </html>
